@@ -1,10 +1,10 @@
-const register = (res, req, next) => {
+const register = (req, res, next) => {
   res.send("register");
 };
-const login = (res, req, next) => {
+const login = (req, res, next) => {
   res.send("login");
 };
-const updateUser = (res, req, next) => {
+const updateUser = (req, res, next) => {
   res.send("updateUser");
 };
 
