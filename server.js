@@ -3,6 +3,7 @@ const app = express();
 import dotenv from "dotenv";
 dotenv.config();
 import "express-async-errors";
+import morgan from "morgan";
 import cors from "cors";
 
 // db and authenticateUser
@@ -18,6 +19,9 @@ import errorHandlerMiddleware from "./middleware/error-handler.js";
 
 app.use(cors());
 app.use(express.json());
+if (process.env.NODE_DEV !== "production") {
+  app.use(morgan("dev"));
+}
 
 app.get("/api/v1", (req, res) => {
   res.send({ msg: "API welcome!" });
