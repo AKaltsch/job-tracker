@@ -21,8 +21,8 @@ function Register() {
     isLoading,
     showAlert,
     displayAlert,
-    registerUser,
-    loginUser,
+    // registerUser,
+    // loginUser,
     setupUser,
   } = useAppContext();
 
