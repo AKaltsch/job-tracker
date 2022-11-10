@@ -31,6 +31,11 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre("save", async function () {
+  console.log(this.modifiedPaths());
+
+  // this will throw an error on updateUser because password is not selected.
+  // we must bypass this function by returning unless we are modifying the password.
+  if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
