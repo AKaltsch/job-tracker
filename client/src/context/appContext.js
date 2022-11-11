@@ -4,12 +4,12 @@ import axios from "axios";
 import {
   CLEAR_ALERT,
   DISPLAY_ALERT,
-  REGISTER_USER_BEGIN,
-  REGISTER_USER_SUCCESS,
-  REGISTER_USER_ERROR,
-  LOGIN_USER_BEGIN,
-  LOGIN_USER_ERROR,
-  LOGIN_USER_SUCCESS,
+  // REGISTER_USER_BEGIN,
+  // REGISTER_USER_SUCCESS,
+  // REGISTER_USER_ERROR,
+  // LOGIN_USER_BEGIN,
+  // LOGIN_USER_ERROR,
+  // LOGIN_USER_SUCCESS,
   SETUP_USER_BEGIN,
   SETUP_USER_ERROR,
   SETUP_USER_SUCCESS,
@@ -38,6 +38,41 @@ const AppContext = React.createContext();
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  //global authorization setup
+  // downside of global setup is that all requests will contain the token in the headers
+  // axios.defaults.headers["Authorization"] = `Bearer ${state.token}`;
+
+  //alternative to global setup
+  //axios instance
+  const authFetch = axios.create({
+    baseURL: "/api/v1",
+  });
+
+  // request interceptor
+  authFetch.interceptors.request.use(
+    (config) => {
+      // config.headers["Authorization"] = `Bearer ${state.token}`;
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  //response interceptor
+  authFetch.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      console.log(error.response);
+      if (error.response.status === 401) {
+        console.log("AUTH ERROR!!!");
+      }
+      return Promise.reject(error);
+    }
+  );
+
   const displayAlert = () => {
     dispatch({ type: DISPLAY_ALERT });
     clearAlert();
@@ -59,55 +94,6 @@ const AppProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("location");
-  };
-
-  const registerUser = async (currentUser) => {
-    dispatch({ type: REGISTER_USER_BEGIN });
-    try {
-      const response = await axios.post("/api/v1/auth/register", currentUser);
-      // console.log(response);
-      const { user, token, location } = response.data;
-      dispatch({
-        type: REGISTER_USER_SUCCESS,
-        payload: {
-          user,
-          token,
-          location,
-        },
-      });
-      addUserToLocalStorage({ user, token, location });
-    } catch (error) {
-      // console.log(error.response);
-      dispatch({
-        type: REGISTER_USER_ERROR,
-        payload: { msg: error.response.data.msg },
-      });
-    }
-    clearAlert();
-  };
-
-  const loginUser = async (currentUser) => {
-    dispatch({ type: LOGIN_USER_BEGIN });
-    try {
-      const { data } = await axios.post("/api/v1/auth/login", currentUser);
-
-      const { user, token, location } = data;
-      dispatch({
-        type: LOGIN_USER_SUCCESS,
-        payload: {
-          user,
-          token,
-          location,
-        },
-      });
-      addUserToLocalStorage({ user, token, location });
-    } catch (error) {
-      dispatch({
-        type: LOGIN_USER_ERROR,
-        payload: { msg: error.response.data.msg },
-      });
-    }
-    clearAlert();
   };
 
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
@@ -148,7 +134,12 @@ const AppProvider = ({ children }) => {
   };
 
   const updateUser = async (currentUser) => {
-    console.log(currentUser);
+    try {
+      const { data } = await authFetch.patch("/auth/updateUser", currentUser);
+      console.log(data);
+    } catch (error) {
+      console.log(error.response);
+    }
   };
 
   return (
@@ -156,8 +147,8 @@ const AppProvider = ({ children }) => {
       value={{
         ...state,
         displayAlert,
-        registerUser,
-        loginUser,
+        // registerUser,
+        // loginUser,
         setupUser,
         toggleSidebar,
         logoutUser,
@@ -174,3 +165,52 @@ export const useAppContext = () => {
 };
 
 export { AppProvider };
+
+// const registerUser = async (currentUser) => {
+//   dispatch({ type: REGISTER_USER_BEGIN });
+//   try {
+//     const response = await axios.post("/api/v1/auth/register", currentUser);
+//     // console.log(response);
+//     const { user, token, location } = response.data;
+//     dispatch({
+//       type: REGISTER_USER_SUCCESS,
+//       payload: {
+//         user,
+//         token,
+//         location,
+//       },
+//     });
+//     addUserToLocalStorage({ user, token, location });
+//   } catch (error) {
+//     // console.log(error.response);
+//     dispatch({
+//       type: REGISTER_USER_ERROR,
+//       payload: { msg: error.response.data.msg },
+//     });
+//   }
+//   clearAlert();
+// };
+
+// const loginUser = async (currentUser) => {
+//   dispatch({ type: LOGIN_USER_BEGIN });
+//   try {
+//     const { data } = await axios.post("/api/v1/auth/login", currentUser);
+
+//     const { user, token, location } = data;
+//     dispatch({
+//       type: LOGIN_USER_SUCCESS,
+//       payload: {
+//         user,
+//         token,
+//         location,
+//       },
+//     });
+//     addUserToLocalStorage({ user, token, location });
+//   } catch (error) {
+//     dispatch({
+//       type: LOGIN_USER_ERROR,
+//       payload: { msg: error.response.data.msg },
+//     });
+//   }
+//   clearAlert();
+// };
