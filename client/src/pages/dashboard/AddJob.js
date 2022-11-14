@@ -4,6 +4,7 @@ import Wrapper from "../../assets/wrappers/DashboardFormPage";
 
 const AddJob = () => {
   const {
+    isLoading,
     isEditing,
     showAlert,
     displayAlert,
@@ -16,16 +17,21 @@ const AddJob = () => {
     statusOptions,
     handleChange,
     clearValues,
+    createJob,
   } = useAppContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!position || !company || !jobLocation) {
-      displayAlert();
+    // if (!position || !company || !jobLocation) {
+    //   displayAlert();
+    //   return;
+    // }
+    if (isEditing) {
+      // add editJob() later
       return;
     }
-    console.log("create job!!!");
+    createJob();
   };
 
   const handleJobInput = (e) => {
@@ -82,6 +88,7 @@ const AddJob = () => {
               className="btn btn-block submit-btn"
               type="submit"
               onClick={handleSubmit}
+              disabled={isLoading}
             >
               submit
             </button>
