@@ -7,7 +7,7 @@ const AddJob = () => {
     isLoading,
     isEditing,
     showAlert,
-    displayAlert,
+    // displayAlert,
     position,
     company,
     jobLocation,
