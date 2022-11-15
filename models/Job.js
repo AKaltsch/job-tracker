@@ -25,7 +25,7 @@ const JobSchema = new mongoose.Schema(
     },
     jobLocation: {
       type: String,
-      default: "my city",
+      default: "San Mateo, CA",
       required: true,
     },
     createdBy: {
