@@ -17,7 +17,6 @@ const JobSchema = new mongoose.Schema(
       enum: ["interview", "declined", "pending"],
       default: "pending",
     },
-
     jobType: {
       type: String,
       enum: ["full-time", "part-time", "remote", "internship"],
@@ -25,7 +24,7 @@ const JobSchema = new mongoose.Schema(
     },
     jobLocation: {
       type: String,
-      default: "San Mateo, CA",
+      default: "San Mateo",
       required: true,
     },
     createdBy: {

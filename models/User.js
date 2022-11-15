@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     select: false,
   },
   lastName: { type: String, trim: true, maxlength: 20, default: "lastName" },
-  location: { type: String, trim: true, maxlength: 20, default: "My City" },
+  location: { type: String, trim: true, maxlength: 20, default: "San Mateo" },
 });
 
 UserSchema.pre("save", async function () {
