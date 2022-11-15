@@ -6,8 +6,9 @@ const AddJob = () => {
   const {
     isLoading,
     isEditing,
+    editJob,
     showAlert,
-    // displayAlert,
+    displayAlert,
     position,
     company,
     jobLocation,
@@ -23,12 +24,12 @@ const AddJob = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // if (!position || !company || !jobLocation) {
-    //   displayAlert();
-    //   return;
-    // }
+    if (!position || !company || !jobLocation) {
+      displayAlert();
+      return;
+    }
     if (isEditing) {
-      // add editJob() later
+      editJob();
       return;
     }
     createJob();
