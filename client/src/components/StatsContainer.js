@@ -1,6 +1,6 @@
 import { useAppContext } from "../context/appContext";
 import StatsItem from "./StatsItem";
-import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from "react-icons/fa";
+import { FaSuitcaseRolling, FaCalendarCheck, FaBookDead } from "react-icons/fa";
 import Wrapper from "../assets/wrappers/StatsContainer";
 
 const StatsContainer = () => {
@@ -23,7 +23,7 @@ const StatsContainer = () => {
     {
       title: "jobs declined",
       count: stats.declined || 0,
-      icon: <FaBug />,
+      icon: <FaBookDead />,
       color: "#d66a6a",
       bcg: "#ffeeee",
     },
