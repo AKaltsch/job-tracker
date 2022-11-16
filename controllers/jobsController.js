@@ -33,13 +33,47 @@ const deleteJob = async (req, res, next) => {
   res.status(StatusCodes.OK).json({ msg: "Job successfully removed!!!" });
 };
 
+/////GET ALL JOBS
 const getAllJobs = async (req, res, next) => {
-  const jobs = await Job.find({ createdBy: req.user.userId });
+  const { status, jobType, sort, search } = req.query;
+
+  const queryObject = { createdBy: req.user.userId };
+
+  // add stuff based on condition
+  if (status !== "all") {
+    queryObject.status = status;
+  }
+  if (jobType !== "all") {
+    queryObject.jobType = jobType;
+  }
+  if (search) {
+    queryObject.position = { $regex: search, $options: "i" };
+  }
+
+  //NO AWAIT
+  let result = Job.find(queryObject);
+
+  //chain sort conditions
+  if (sort === "latest") {
+    result = result.sort("-createdAt");
+  }
+  if (sort === "oldest") {
+    result = result.sort("createdAt");
+  }
+  if (sort === "a-z") {
+    result = result.sort("position");
+  }
+  if (sort === "z-a") {
+    result = result.sort("-position");
+  }
+
+  const jobs = await result;
   res
     .status(StatusCodes.OK)
     .json({ jobs, totalJobs: jobs.length, numOfPages: 1 });
 };
 
+///////UPDATE JOB
 const updateJob = async (req, res, next) => {
   //create alias for id
   const { id: jobId } = req.params;
