@@ -6,6 +6,10 @@ import "express-async-errors";
 import morgan from "morgan";
 import cors from "cors";
 
+import helmet from "helmet";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
@@ -29,8 +33,13 @@ if (process.env.NODE_DEV !== "production") {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.json());
+//only when ready to deploy
 app.use(express.static(path.resolve(__dirname, "./client/build")));
+
+app.use(express.json());
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/jobs", authenticateUser, jobsRouter);
