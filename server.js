@@ -1,3 +1,5 @@
+/////// APP DEPLOYED ON https://mern-job-tracker.onrender.com/landing //////////////
+
 import express from "express";
 const app = express();
 import dotenv from "dotenv";
